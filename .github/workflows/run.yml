@@ -38,7 +38,12 @@ jobs:
           grep -v ":" ./geoip_ru_data/ru_all.txt > ./geoip_ru_data/ru.txt
           echo "Оригинальный файл содержит $(wc -l < ./geoip_ru_data/ru_all.txt) записей"
           echo "После фильтрации IPv4 only: $(wc -l < ./geoip_ru_data/ru.txt) записей"
-          # Создаем конфигурационный файл для генерации российских IP + приватных адресов
+          # Скачиваем китайские IP адреса как заглушку для обхода логики проверки
+          wget -O ./geoip_ru_data/cn_all.txt https://raw.githubusercontent.com/v2fly/geoip/release/text/cn.txt
+          # Фильтруем только IPv4 адреса для CN
+          grep -v ":" ./geoip_ru_data/cn_all.txt > ./geoip_ru_data/cn.txt
+          echo "CN файл содержит $(wc -l < ./geoip_ru_data/cn.txt) IPv4 записей"
+          # Создаем конфигурационный файл для генерации российских IP + приватных адресов + CN заглушка
           cat > ru_config.json << 'EOF'
           {
             "input": [
@@ -48,6 +53,14 @@ jobs:
                 "args": {
                   "name": "ru",
                   "uri": "./geoip_ru_data/ru.txt"
+                }
+              },
+              {
+                "type": "text",
+                "action": "add",
+                "args": {
+                  "name": "cn",
+                  "uri": "./geoip_ru_data/cn.txt"
                 }
               },
               {
