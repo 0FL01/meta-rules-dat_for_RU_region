@@ -32,8 +32,12 @@ jobs:
           go install -v github.com/v2fly/geoip@latest
           # Создаем временную директорию для исходных данных
           mkdir -p geoip_ru_data
-          # Скачиваем официальный и актуальный список IPv4 адресов для России (код страны 'ru')
-          wget -O ./geoip_ru_data/ru.txt https://raw.githubusercontent.com/v2fly/geoip/release/text/ru.txt
+          # Скачиваем официальный и актуальный список IP адресов для России (код страны 'ru')
+          wget -O ./geoip_ru_data/ru_all.txt https://raw.githubusercontent.com/v2fly/geoip/release/text/ru.txt
+          # Фильтруем только IPv4 адреса (исключаем IPv6 которые содержат двоеточия)
+          grep -v ":" ./geoip_ru_data/ru_all.txt > ./geoip_ru_data/ru.txt
+          echo "Оригинальный файл содержит $(wc -l < ./geoip_ru_data/ru_all.txt) записей"
+          echo "После фильтрации IPv4 only: $(wc -l < ./geoip_ru_data/ru.txt) записей"
           # Создаем конфигурационный файл для генерации только российских IP
           cat > ru_config.json << 'EOF'
           {
