@@ -24,18 +24,43 @@ jobs:
       - name: Setup Go
         uses: actions/setup-go@v5
         with:
-          go-version: '1.22'
+          go-version: '1.24'
 
       - name: Сборка geoip.dat для РФ (ipv4 only)
         run: |
-          # Устанавливаем v2dat - инструмент для компиляции .dat файлов из исходных текстовых списков
-          go install github.com/v2fly/v2ray-core/v5/infra/conf/v2dat@latest
+          # Устанавливаем CLI инструмент v2fly/geoip для генерации .dat файлов
+          go install -v github.com/v2fly/geoip@latest
           # Создаем временную директорию для исходных данных
           mkdir -p geoip_ru_data
           # Скачиваем официальный и актуальный список IPv4 адресов для России (код страны 'ru')
-          wget -O ./geoip_ru_data/ru https://raw.githubusercontent.com/v2fly/geoip/release/text/ru.txt
-          # Компилируем geoip.dat, который будет содержать только российские IP-адреса с тегом 'ru'
-          ~/go/bin/v2dat -data-dir ./geoip_ru_data -output geoip.dat
+          wget -O ./geoip_ru_data/ru.txt https://raw.githubusercontent.com/v2fly/geoip/release/text/ru.txt
+          # Создаем конфигурационный файл для генерации только российских IP
+          cat > ru_config.json << 'EOF'
+          {
+            "input": [
+              {
+                "type": "text",
+                "action": "add",
+                "args": {
+                  "name": "ru",
+                  "uri": "./geoip_ru_data/ru.txt"
+                }
+              }
+            ],
+            "output": [
+              {
+                "type": "v2rayGeoIPDat",
+                "action": "output",
+                "args": {
+                  "outputName": "geoip.dat",
+                  "outputDir": "."
+                }
+              }
+            ]
+          }
+          EOF
+          # Генерируем geoip.dat с российскими IP адресами
+          ~/go/bin/geoip -c ru_config.json
 
       - name: Prepare release files
         run: |
