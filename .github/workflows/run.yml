@@ -203,10 +203,18 @@ jobs:
           echo "openai.com" >> ./data-lite/openai
           go run ./ --datapath=./data-lite --outputname geosite-lite.dat
 
-      - name: Get geoip.dat relative files
+      - name: Сборка geoip.dat для РФ (ipv4 only)
         run: |
-          wget -O geoip-lite.dat https://github.com/xishang0128/geoip/raw/release/geoip.dat
-          wget https://github.com/Loyalsoldier/geoip/raw/release/geoip.dat
+          # Устанавливаем v2dat - инструмент для компиляции .dat файлов из исходных текстовых списков
+          go install github.com/v2fly/v2ray-core/v5/infra/conf/v2dat@latest
+          # Создаем временную директорию для исходных данных
+          mkdir -p geoip_ru_data
+          # Скачиваем официальный и актуальный список IPv4 адресов для России (код страны 'ru')
+          wget -O ./geoip_ru_data/ru https://raw.githubusercontent.com/v2fly/geoip/release/text/ru.txt
+          # Компилируем geoip.dat, который будет содержать только российские IP-адреса с тегом 'ru'
+          ~/go/bin/v2dat -data-dir ./geoip_ru_data -output geoip.dat
+          # Так как последующие шаги могут использовать 'geoip-lite.dat', создаем его как копию основного файла
+          cp geoip.dat geoip-lite.dat
 
       - name: Build db and metadb file
         env:
