@@ -1,4 +1,3 @@
-
 # GeoIP база данных для России (RU)
 
 Этот репозиторий предоставляет актуальную базу данных `geoip.dat`, содержащую исключительно IPv4 адреса для Российской Федерации. База предназначена для использования в таких программах, как V2Ray, Xray, sing-box и их форках (например, mihomo), для настройки правил маршрутизации.
@@ -16,12 +15,10 @@
 
 Вы можете скачать готовые файлы напрямую из последнего релиза или использовать CDN для автоматического обновления в ваших приложениях.
 
-⚠️ **Важно:** В ссылках ниже замените `ВАШ_НИК/ВАШ_РЕПОЗИТОРИЙ` на реальный путь к вашему форку.
-
 | Файл | GitHub Release | jsDelivr CDN |
 | :--- | :--- | :--- |
-| `geoip.dat` | [Скачать](https://github.com/ВАШ_НИК/ВАШ_РЕПОЗИТОРИЙ/releases/download/latest/geoip.dat) | [Ссылка](https://cdn.jsdelivr.net/gh/ВАШ_НИК/ВАШ_РЕПОЗИТОРИЙ@release/geoip.dat) |
-| `geoip.dat.sha256sum` | [Скачать](https://github.com/ВАШ_НИК/ВАШ_РЕПОЗИТОРИЙ/releases/download/latest/geoip.dat.sha256sum) | [Ссылка](https://cdn.jsdelivr.net/gh/ВАШ_НИК/ВАШ_РЕПОЗИТОРИЙ@release/geoip.dat.sha256sum) |
+| `geoip.dat` | [Скачать](https://github.com/0FL01/meta-rules-dat_FOR_RU_REGION/releases/download/latest/geoip.dat) | [Ссылка](https://cdn.jsdelivr.net/gh/0FL01/meta-rules-dat_FOR_RU_REGION@release/geoip.dat) |
+| `geoip.dat.sha256sum` | [Скачать](https://github.com/0FL01/meta-rules-dat_FOR_RU_REGION/releases/download/latest/geoip.dat.sha256sum) | [Ссылка](https://cdn.jsdelivr.net/gh/0FL01/meta-rules-dat_FOR_RU_REGION@release/geoip.dat.sha256sum) |
 
 ## Пример использования
 
