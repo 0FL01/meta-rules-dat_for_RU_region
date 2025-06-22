@@ -38,7 +38,7 @@ jobs:
           grep -v ":" ./geoip_ru_data/ru_all.txt > ./geoip_ru_data/ru.txt
           echo "Оригинальный файл содержит $(wc -l < ./geoip_ru_data/ru_all.txt) записей"
           echo "После фильтрации IPv4 only: $(wc -l < ./geoip_ru_data/ru.txt) записей"
-          # Создаем конфигурационный файл для генерации только российских IP
+          # Создаем конфигурационный файл для генерации российских IP + приватных адресов
           cat > ru_config.json << 'EOF'
           {
             "input": [
@@ -48,6 +48,13 @@ jobs:
                 "args": {
                   "name": "ru",
                   "uri": "./geoip_ru_data/ru.txt"
+                }
+              },
+              {
+                "type": "private",
+                "action": "add",
+                "args": {
+                  "name": "private"
                 }
               }
             ],
