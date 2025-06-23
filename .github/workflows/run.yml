@@ -26,6 +26,11 @@ jobs:
         with:
           go-version: '1.24'
 
+      - name: Install mihomo for .mrs generation
+        run: |
+          curl -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" -L https://github.com/MetaCubeX/mihomo/releases/download/v1.19.9/mihomo-linux-amd64-v1.19.9.deb -o mihomo-linux-amd64-v1.19.9.deb
+          sudo apt install --fix-missing ./mihomo-linux-amd64-v1.19.9.deb
+
       - name: Сборка geoip.dat для РФ (ipv4 only)
         run: |
           # Устанавливаем CLI инструмент v2fly/geoip для генерации .dat файлов
@@ -84,12 +89,22 @@ jobs:
           # Генерируем geoip.dat с российскими IP адресами
           ~/go/bin/geoip -c ru_config.json
 
+      - name: Генерация geoip_ru.mrs файла 
+        run: |
+          # Генерируем .mrs файл из российских IP адресов для mihomo
+          mihomo convert-ruleset ipcidr text ./geoip_ru_data/ru.txt geoip_ru.mrs
+          echo "Создан geoip_ru.mrs файл"
+          # Очищаем временные файлы
+          rm -f mihomo-linux-amd64-v1.19.9.deb
+
       - name: Prepare release files
         run: |
           mkdir -p ./publish/
           install -Dp ./geoip.dat ./publish/
+          install -Dp ./geoip_ru.mrs ./publish/
           cd ./publish || exit 1
           sha256sum geoip.dat > geoip.dat.sha256sum
+          sha256sum geoip_ru.mrs > geoip_ru.mrs.sha256sum
 
       - name: Delete current release assets
         uses: andreaswilli/delete-release-assets-action@v3.0.0
